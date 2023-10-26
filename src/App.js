@@ -3,6 +3,7 @@ import queryString from 'query-string';
 import './App.css';
 import PostList from './components/PostList';
 import Pagination from './components/Pagination';
+import PostFiltersForm from './components/PostFiltersForm';
 
 function App() {
   const [postList, setPostList] = useState([]);
@@ -42,8 +43,18 @@ function App() {
     });
   }
 
+  function handleFiltersChange(newFilters) {
+    console.log('New filters: ', newFilters);
+    setFilters({
+      ...filters,
+      _page: 1,
+      title_like: newFilters.searchTerm,
+    });
+  }
+
   return (
     <div className="app">
+      <PostFiltersForm onSubmit={handleFiltersChange} />
       <PostList posts={postList} />
       <Pagination pagination={pagination} onPageChange={handlePageChange} />
     </div>
