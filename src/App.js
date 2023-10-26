@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './App.css';
 import TodoList from './components/TodoList';
+import TodoForm from './components/TodoForm';
 
 function App() {
   const [todoList, setTodoList] = useState([
@@ -19,9 +20,23 @@ function App() {
     setTodoList(newTodoList);
   }
 
+  function handleTodoFormSubmit(formValues) {
+    console.log('Form submit: ', formValues);
+    // add new todo to current todo list
+    const newTodo = {
+      id: todoList.length + 1,
+      ...formValues,
+    };
+    const newTodoList = [...todoList];
+    newTodoList.push(newTodo);
+    setTodoList(newTodoList);
+  }
+
   return (
     <div className="app">
       <TodoList todos={todoList} onTodoClick={handleTodoClick} />
+
+      <TodoForm onSubmit={handleTodoFormSubmit} />
     </div>
   );
 }
