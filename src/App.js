@@ -1,42 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
-import TodoList from './components/TodoList';
-import TodoForm from './components/TodoForm';
+import PostList from './components/PostList';
 
 function App() {
-  const [todoList, setTodoList] = useState([
-    { id: 1, title: 'I love Easy Frontend!' },
-    { id: 2, title: 'We love Easy Frontend!' },
-    { id: 3, title: 'They love Easy Frontend!' },
-  ]);
+  const [postList, setPostList] = useState([]);
 
-  function handleTodoClick(todo) {
-    console.log(todo);
-    const index = todoList.findIndex((x) => x.id === todo.id);
-    if (index < 0) return;
+  useEffect(() => {
+    async function fetchPostList() {
+      // ...
+      try {
+        const requestUrl =
+          'http://js-post-api.herokuapp.com/api/posts?_limit=10&_page=1';
+        const response = await fetch(requestUrl);
+        const responseJSON = await response.json();
+        console.log({ responseJSON });
 
-    const newTodoList = [...todoList];
-    newTodoList.splice(index, 1);
-    setTodoList(newTodoList);
-  }
+        const { data } = responseJSON;
+        setPostList(data);
+      } catch (error) {
+        console.log('Failed to fetch post list: ', error.message);
+      }
+    }
 
-  function handleTodoFormSubmit(formValues) {
-    console.log('Form submit: ', formValues);
-    // add new todo to current todo list
-    const newTodo = {
-      id: todoList.length + 1,
-      ...formValues,
-    };
-    const newTodoList = [...todoList];
-    newTodoList.push(newTodo);
-    setTodoList(newTodoList);
-  }
+    console.log('POST list effect');
+    fetchPostList();
+  }, []);
 
   return (
     <div className="app">
-      <TodoList todos={todoList} onTodoClick={handleTodoClick} />
-
-      <TodoForm onSubmit={handleTodoFormSubmit} />
+      <PostList posts={postList} />
     </div>
   );
 }
